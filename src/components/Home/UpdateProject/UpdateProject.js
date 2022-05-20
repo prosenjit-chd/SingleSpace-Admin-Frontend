@@ -3,10 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { Col, Container, Form, Row, Button, Modal } from 'react-bootstrap';
 import swal from 'sweetalert';
 import ReactLoading from 'react-loading';
+import useAuth from '../../../hooks/useAuth';
 
 const UpdateProject = (props) => {
     const [project, setProject] = useState({});
     const [loading, setLoading] = useState(true);
+    const { token } = useAuth();
 
     useEffect(() => {
         axios.get(`https://singlespace.herokuapp.com/api/projects/${props.project_id}`)
@@ -30,8 +32,13 @@ const UpdateProject = (props) => {
         }
         // newProduct["status"] = true;
         console.log(newProject);
+        const authToken = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }
 
-        axios.put(`https://singlespace.herokuapp.com/api/projects/${props.project_id}`, newProject)
+        axios.put(`https://singlespace.herokuapp.com/api/projects/${props.project_id}`, newProject, authToken)
             .then(res => {
                 if (res) {
                     swal({

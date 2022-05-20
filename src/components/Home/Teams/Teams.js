@@ -6,10 +6,12 @@ import { BsPencilSquare } from 'react-icons/bs';
 import ReactLoading from 'react-loading'
 import swal from 'sweetalert';
 import UpdateTeams from '../UpdateTeams/UpdateTeams';
+import useAuth from '../../../hooks/useAuth';
 
 const Teams = () => {
     // Use USe State here 
     const [events, setEvents] = useState([]);
+    const { token } = useAuth();
 
     const [modalShow, setModalShow] = useState(false);
     const [teamId, setTeamId] = useState("");
@@ -18,6 +20,12 @@ const Teams = () => {
         axios.get('https://singlespace.herokuapp.com/api/teams')
             .then(res => setEvents(res.data.teams))
     }, [modalShow])
+
+    const authToken = {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }
 
     // Delete Order event button handler 
     const handleEventDelete = (id) => {
@@ -30,7 +38,7 @@ const Teams = () => {
         })
             .then((willDelete) => {
                 if (willDelete) {
-                    axios.delete(`https://singlespace.herokuapp.com/api/teams/${id}`)
+                    axios.delete(`https://singlespace.herokuapp.com/api/teams/${id}`, authToken)
                         .then(res => {
                             const remainingEvents = events.filter(e => e._id !== id);
                             setEvents(remainingEvents);

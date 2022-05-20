@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Col, Container, Form, Row, Button } from 'react-bootstrap';
+import useAuth from '../../../hooks/useAuth';
 import swal from 'sweetalert';
 
 const AddTeams = () => {
     const [member, setMember] = useState({});
+    const { token } = useAuth();
 
     const handleOnBlur = e => {
         const field = e.target.name;
@@ -19,9 +21,15 @@ const AddTeams = () => {
         const newMember = {
             ...member
         }
+        const authToken = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }
+
         newMember["status"] = true;
-        console.log(newMember);
-        axios.post('https://singlespace.herokuapp.com/api/teams', newMember)
+
+        axios.post('https://singlespace.herokuapp.com/api/teams', newMember, authToken)
             .then(res => {
                 if (res) {
                     swal({

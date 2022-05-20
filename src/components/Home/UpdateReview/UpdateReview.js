@@ -3,10 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { Col, Form, Row, Button, Modal } from 'react-bootstrap';
 import swal from 'sweetalert';
 import ReactLoading from 'react-loading';
+import useAuth from '../../../hooks/useAuth';
 
 const UpdateReview = (props) => {
     const [review, setReview] = useState({});
     const [loading, setLoading] = useState(true);
+    const { token } = useAuth();
 
     useEffect(() => {
         axios.get(`https://singlespace.herokuapp.com/api/reviews/${props.project_id}`)
@@ -30,8 +32,13 @@ const UpdateReview = (props) => {
         }
         // newProduct["status"] = true;
         console.log(newReview);
+        const authToken = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }
 
-        axios.put(`https://singlespace.herokuapp.com/api/reviews/${props.project_id}`, newReview)
+        axios.put(`https://singlespace.herokuapp.com/api/reviews/${props.project_id}`, newReview, authToken)
             .then(res => {
                 if (res) {
                     swal({

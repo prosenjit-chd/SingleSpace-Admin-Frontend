@@ -6,10 +6,12 @@ import ReactLoading from 'react-loading'
 import swal from 'sweetalert';
 import { BsPencilSquare } from 'react-icons/bs';
 import UpdateReview from '../UpdateReview/UpdateReview';
+import useAuth from '../../../hooks/useAuth';
 
 const Reviews = () => {
     // Use USe State here 
     const [events, setEvents] = useState([]);
+    const { token } = useAuth();
 
     const [modalShow, setModalShow] = useState(false);
     const [reviewId, setReviewId] = useState("");
@@ -18,6 +20,13 @@ const Reviews = () => {
         axios.get('https://singlespace.herokuapp.com/api/reviews')
             .then(res => setEvents(res.data.reviews))
     }, [modalShow])
+
+
+    const authToken = {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }
 
     // Delete Order event button handler 
     const handleEventDelete = (id) => {
@@ -30,7 +39,7 @@ const Reviews = () => {
         })
             .then((willDelete) => {
                 if (willDelete) {
-                    axios.delete(`https://singlespace.herokuapp.com/api/reviews/${id}`)
+                    axios.delete(`https://singlespace.herokuapp.com/api/reviews/${id}`, authToken)
                         .then(res => {
                             const remainingEvents = events.filter(e => e._id !== id);
                             setEvents(remainingEvents);

@@ -5,6 +5,7 @@ import { ArchiveFill } from 'react-bootstrap-icons';
 import { BsPencilSquare } from 'react-icons/bs';
 import ReactLoading from 'react-loading'
 import swal from 'sweetalert';
+import useAuth from '../../../hooks/useAuth';
 import UpdateUtilities from '../UpdateUtilities/UpdateUtilities';
 
 const Utilities = () => {
@@ -13,12 +14,18 @@ const Utilities = () => {
 
     const [modalShow, setModalShow] = useState(false);
     const [foodId, setFoodId] = useState("");
+    const { token } = useAuth();
     // Use Effect use here for fetching data 
     useEffect(() => {
         axios.get('https://singlespace.herokuapp.com/api/utilities')
             .then(res => setEvents(res.data.utilities))
     }, [modalShow])
 
+    const authToken = {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }
     // Delete Order event button handler 
     const handleEventDelete = (id) => {
         swal({
@@ -30,7 +37,7 @@ const Utilities = () => {
         })
             .then((willDelete) => {
                 if (willDelete) {
-                    axios.delete(`https://singlespace.herokuapp.com/api/utilities/${id}`)
+                    axios.delete(`https://singlespace.herokuapp.com/api/utilities/${id}`, authToken)
                         .then(res => {
                             const remainingEvents = events.filter(e => e._id !== id);
                             setEvents(remainingEvents);

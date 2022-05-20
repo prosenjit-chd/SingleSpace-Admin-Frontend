@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Col, Container, Form, Row, Button } from 'react-bootstrap';
+import useAuth from '../../../hooks/useAuth';
 import swal from 'sweetalert';
 
 const AddProjects = () => {
     const [project, setProject] = useState({});
+    const { token } = useAuth();
 
     const handleOnBlur = e => {
         const field = e.target.name;
@@ -19,9 +21,15 @@ const AddProjects = () => {
         const newProject = {
             ...project
         }
+
+        const authToken = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }
         newProject["status"] = true;
-        console.log(newProject);
-        axios.post('https://singlespace.herokuapp.com/api/projects', newProject)
+
+        axios.post('https://singlespace.herokuapp.com/api/projects', newProject, authToken)
             .then(res => {
                 if (res) {
                     swal({

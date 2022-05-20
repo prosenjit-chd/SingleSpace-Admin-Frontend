@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Col, Container, Form, Row, Button } from 'react-bootstrap';
+import useAuth from '../../../hooks/useAuth';
 import swal from 'sweetalert';
 
 const AddUtilities = () => {
     const [product, setProduct] = useState({});
+    const { token } = useAuth();
 
     const handleOnBlur = e => {
         const field = e.target.name;
@@ -19,9 +21,14 @@ const AddUtilities = () => {
         const newProduct = {
             ...product
         }
+        const authToken = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }
         newProduct["status"] = true;
-        console.log(newProduct);
-        axios.post('https://singlespace.herokuapp.com/api/utilities', newProduct)
+
+        axios.post('https://singlespace.herokuapp.com/api/utilities', newProduct, authToken)
             .then(res => {
                 if (res) {
                     swal({

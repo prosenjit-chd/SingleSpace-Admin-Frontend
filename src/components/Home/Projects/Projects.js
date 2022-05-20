@@ -6,10 +6,12 @@ import { BsPencilSquare } from 'react-icons/bs';
 import ReactLoading from 'react-loading'
 import swal from 'sweetalert';
 import UpdateProject from '../UpdateProject/UpdateProject';
+import useAuth from '../../../hooks/useAuth';
 
 const Projects = () => {
     // Use USe State here 
     const [events, setEvents] = useState([]);
+    const { token } = useAuth();
 
     const [modalShow, setModalShow] = useState(false);
     const [projectId, setProjectId] = useState("");
@@ -18,6 +20,12 @@ const Projects = () => {
         axios.get('https://singlespace.herokuapp.com/api/projects')
             .then(res => setEvents(res.data.projects))
     }, [modalShow])
+
+    const authToken = {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }
 
     // Delete Order event button handler 
     const handleEventDelete = (id) => {
@@ -30,7 +38,7 @@ const Projects = () => {
         })
             .then((willDelete) => {
                 if (willDelete) {
-                    axios.delete(`https://singlespace.herokuapp.com/api/projects/${id}`)
+                    axios.delete(`https://singlespace.herokuapp.com/api/projects/${id}`, authToken)
                         .then(res => {
                             const remainingEvents = events.filter(e => e._id !== id);
                             setEvents(remainingEvents);
